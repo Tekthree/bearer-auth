@@ -4,8 +4,14 @@ Authentication Server Phase 2: Token (Bearer) Authentication
 ## Author - Tek Jones
 ---
 
-## Deployment - 
+## Deployment - https://tekjones-bearer-auth.herokuapp.com/
 ---
+
+## test
+- npm run test
+
+## start
+- node .
 
 ## UML - ![UML](./uml.png)
 
