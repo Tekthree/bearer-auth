@@ -1,29 +1,29 @@
-'use strict';
+"use strict";
 
-const base64 = require('base-64');
-const { users } = require('../models/index.js')
+const base64 = require("base-64");
+const { users } = require("../models/index.js");
 
 module.exports = async (req, res, next) => {
-
-  let basicHeaderParts = req.headers.authorization.split(' '); 
-  let encodedString = basicHeaderParts.pop();  
-  let decodedString = base64.decode(encodedString); 
-  let [username, password] = decodedString.split(':'); 
-
-  try {
-    const user = await users.findOne({ where: { username: username } });
-    const valid = await bcrypt.compare(password, user.password);
-    if (valid) {
-      req.user = user;
-      next();
-      // res.status(200).json(user);
-    }
-    else {
-      throw new Error('Invalid User')
-    }
-  } catch (e) {
-    res.status(403).send('Invalid Login');
+  if (!req.headers.authorization) {
+    return _authError();
   }
 
-}
+  let basic = req.headers.authorization;
+  console.log(basic);
+  let splitHeader = basic.split(" ");
 
+  let [username, pass] = base64.decode(splitHeader[1]).split(":");
+  console.log("POST SPLIT HEADER", username, pass);
+
+  try {
+    req.user = await users.authenticateBasic(username, pass);
+    next();
+  } catch (e) {
+    res.status(403).send("Invalid Login");
+  }
+};
+
+// let basicHeaderParts = req.headers.authorization.split(' ');  // ['Basic', 'sdkjdsljd=']
+// let encodedString = basicHeaderParts.pop();  // sdkjdsljd=
+// let decodedString = base64.decode(encodedString); // "username:password"
+// let [username, pass] = decodedString.split(':'); // username, password
