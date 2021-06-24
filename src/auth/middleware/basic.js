@@ -8,22 +8,15 @@ module.exports = async (req, res, next) => {
     return _authError();
   }
 
-  let basic = req.headers.authorization;
-  console.log(basic);
-  let splitHeader = basic.split(" ");
+  let basic = req.headers.authorization.split(" ")[1];
 
-  let [username, pass] = base64.decode(splitHeader[1]).split(":");
-  console.log("POST SPLIT HEADER", username, pass);
-
+  let [username, pass] = base64.decode(basic).split(":");
+  
   try {
     req.user = await users.authenticateBasic(username, pass);
+    console.log("----------req.user", req.user);
     next();
   } catch (e) {
     res.status(403).send("Invalid Login");
   }
 };
-
-// let basicHeaderParts = req.headers.authorization.split(' ');  // ['Basic', 'sdkjdsljd=']
-// let encodedString = basicHeaderParts.pop();  // sdkjdsljd=
-// let decodedString = base64.decode(encodedString); // "username:password"
-// let [username, pass] = decodedString.split(':'); // username, password
