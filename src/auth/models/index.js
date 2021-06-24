@@ -16,9 +16,10 @@ let sequelize = new Sequelize(DATABASE_URL, NODE_ENV === 'production' ? {
   }
 }: {});
 
-const users = userSchema(sequelize, DataTypes)
+const users = userSchema(sequelize, DataTypes);
+
 
 module.exports = {
   db: sequelize,
-  users: users,
+  users: users
 }
